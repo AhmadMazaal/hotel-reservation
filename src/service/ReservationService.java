@@ -70,7 +70,7 @@ public class ReservationService {
     }
 
     public Collection<IRoom> getAllRooms(){
-        System.out.println("Displaying all the rooms available in the Hotel");
+        System.out.println("Displaying all the rooms available in the Hotel: \n");
         return this.rooms.values();
     }
 }

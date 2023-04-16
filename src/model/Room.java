@@ -7,6 +7,13 @@ public class Room implements IRoom{
     private boolean isRoomFree;
     private double price;
 
+    public Room(String roomNumber, RoomType roomType, boolean isRoomFree, double price){
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.isRoomFree = isRoomFree;
+        this.price = price;
+    }
+
     @Override
     public RoomType getRoomType() {
         return this.roomType;

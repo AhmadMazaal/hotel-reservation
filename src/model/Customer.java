@@ -10,12 +10,17 @@ public class Customer {
     private String email;
 
     public Customer(String firstName, String lastName, String email){
-        if(isInvalidEmail(email)){
-            throw new IllegalArgumentException("Wrong email format");
+        try{
+            if(isInvalidEmail(email)){
+                throw new IllegalArgumentException("Wrong email format");
+            }
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+        }catch(IllegalArgumentException exception){
+            System.out.println("Error creating a new customer: "  +exception.getLocalizedMessage());
         }
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+
     }
 
     public String getFirstName() {

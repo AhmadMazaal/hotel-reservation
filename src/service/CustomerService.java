@@ -12,15 +12,15 @@ public class  CustomerService {
 
     public void addCustomer(String email, String firstName, String lastName) {
         Customer customer = new Customer(email, firstName, lastName);
-        this.customers.put(email, customer);
+        customers.put(email, customer);
     }
 
     public Customer getCustomer(String customerEmail) {
-        return this.customers.get(customerEmail);
+        return customers.get(customerEmail);
     }
 
     public Collection<Customer> getAllCustomers() {
-        return this.customers.values();
+        return customers.values();
     }
 
 }

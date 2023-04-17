@@ -9,8 +9,9 @@ public class Customer {
     private String lastName;
     private String email;
 
-    public Customer(String firstName, String lastName, String email){
+    public Customer(String email, String firstName, String lastName){
         try{
+            System.out.println("New customer email: " +email);
             if(isInvalidEmail(email)){
                 throw new IllegalArgumentException("Wrong email format");
             }
@@ -40,23 +41,18 @@ public class Customer {
     }
 
     public String getEmail() {
-        if(isInvalidEmail(email)){
-            throw new IllegalArgumentException("Wrong email format");
-        }
         return this.email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        try {
+            if(isInvalidEmail(email)){
+                throw new IllegalArgumentException("Wrong email format");
+            }
+            this.email = email;
+        }catch(IllegalArgumentException exception){
+            System.out.println("Error creating a new customer: "  +exception.getLocalizedMessage());
+        }
     }
 
     private static boolean  isInvalidEmail(String email){
@@ -64,5 +60,13 @@ public class Customer {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return !matcher.find();
+    }
+
+    @Override
+    public String toString() {
+        return "Customer: " +
+                "firstName: " + this.firstName +
+                ", lastName: " + this.lastName +
+                ", email: " + this.email;
     }
 }

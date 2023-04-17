@@ -13,22 +13,29 @@ public class AdminResource {
     private static final CustomerService customerService = new CustomerService();
     private static final ReservationService reservationService = new ReservationService();
     public Customer getCustomer(String email){
-        return this.customerService.getCustomer(email);
+        return customerService.getCustomer(email);
     }
 
-//    public void addRoom(List<IRoom> rooms){
-//        this.reservationService.addRoom();
-//    }
+    public void addRoom(List<IRoom> rooms){
+        for(IRoom room:rooms){
+            reservationService.addRoom(room);
+        }
+    }
 
     public Collection<IRoom> getAllRooms(){
-        return this.reservationService.getAllRooms();
+        return reservationService.getAllRooms();
     }
 
     public Collection<Customer> getAllCustomers(){
-        return this.customerService.getAllCustomers();
+        return customerService.getAllCustomers();
     }
 
     public void displayAllReservations(){
-        this.reservationService.printAllReservations();;
+        reservationService.printAllReservations();;
     }
+
+    public IRoom getRoom(String roomNumber){
+        return reservationService.getARoom(roomNumber);
+    }
+
 }

@@ -11,7 +11,6 @@ public class Customer {
 
     public Customer(String email, String firstName, String lastName){
         try{
-            System.out.println("New customer email: " +email);
             if(isInvalidEmail(email)){
                 throw new IllegalArgumentException("Wrong email format");
             }
@@ -55,7 +54,7 @@ public class Customer {
         }
     }
 
-    private static boolean  isInvalidEmail(String email){
+    private static boolean isInvalidEmail(String email){
         String emailRegex = "^(.+)@(.+).(.+)$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);

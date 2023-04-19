@@ -30,6 +30,7 @@ public class AdminMenu {
             System.out.println("5. Back to main menu");
             System.out.println("\n----------------------------");
             System.out.println("Please select a number for the menu option");
+            System.out.println("\n----------------------------");
             choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice){
@@ -80,7 +81,7 @@ public class AdminMenu {
         AdminResource adminResource = new AdminResource();
         Collection<Customer> totalCustomers =  adminResource.getAllCustomers();
         if(totalCustomers.size() == 0 ){
-            System.out.println("We have no customers yet! Go back to the main menu to create new customers.");
+            System.out.println("We have no customers yet! Go to the main menu to create new customers.");
             return;
         }
         System.out.println("We have the following customers registered in our Hotel: \n");

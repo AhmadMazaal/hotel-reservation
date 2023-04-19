@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Reservation {
 
-    private Customer customer;
-    private IRoom room;
-    private Date checkInDate;
-    private Date checkOutDate;
+    private final Customer customer;
+    private final IRoom room;
+    private final Date checkInDate;
+    private final Date checkOutDate;
 
     public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         this.customer = customer;
@@ -34,11 +34,10 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation{" +
-                "customer=" + customer +
-                ", room=" + room +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                '}';
+        return "Reservation:\n" +
+                this.getCustomer() +"\n" +
+                this.getRoom() +
+                ", checkInDate: " + this.getCheckInDate() +
+                ", checkOutDate: " + this.getCheckOutDate();
     }
 }

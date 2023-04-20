@@ -1,19 +1,19 @@
 package utils;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Helpers {
-    private final Scanner scanner;
 
-    public Helpers() {
-        this.scanner = new Scanner(System.in);
-    }
-
-    public char readYesNo(String prompt) {
+    public static char readYesNo(String prompt) {
+        final Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println(prompt);
-            String input = this.scanner.nextLine().trim();
+            String input = scanner.nextLine().trim();
             if (
                 input.length() == 1 &&
                 (
@@ -34,16 +34,20 @@ public class Helpers {
         return !matcher.find();
     }
 
-//    public boolean readPromptWithCondition(String prompt, boolean condition, String promptError) {
-//        String input;
-//        do{
-//            System.out.println(prompt);
-//            input = this.scanner.nextLine().trim();
-//            if (condition) {
-//                System.out.println(promptError);
-//            }
-//        }while(condition);
-//        return true;
-//    }
+    public static boolean isDateInvalid(String dateStr){
+        String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
+        if (!dateStr.matches(dateRegex)) {
+            System.out.println("Invalid date format, please enter in the format of mm/dd/yyyy");
+            return true;
+        }
+        return false;
+    }
+
+    public static String formatDate(Date date){
+        ZoneId zoneId = ZoneId.of("UTC");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy").withZone(zoneId);
+        LocalDate localDate = date.toInstant().atZone(zoneId).toLocalDate();
+        return localDate.format(formatter);
+    }
 
 }

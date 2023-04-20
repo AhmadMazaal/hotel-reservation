@@ -3,10 +3,8 @@ package service;
 import model.Customer;
 import model.IRoom;
 import model.Reservation;
+import utils.Helpers;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReservationService {
@@ -33,16 +31,10 @@ public class ReservationService {
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        ZoneId zoneId = ZoneId.of("UTC");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy").withZone(zoneId);
+        String formattedCheckInDate = Helpers.formatDate(checkInDate);
+        String formattedCheckOutDate = Helpers.formatDate(checkOutDate);
 
-        LocalDate checkInLocalDate = checkInDate.toInstant().atZone(zoneId).toLocalDate();
-        String formattedCheckInDate = checkInLocalDate.format(formatter);
-
-        LocalDate checkOutLocalDate = checkOutDate.toInstant().atZone(zoneId).toLocalDate();
-        String formattedCheckOutDate = checkOutLocalDate.format(formatter);
-
-        System.out.println("Searching for a room between " + formattedCheckInDate + " & " + formattedCheckOutDate + "...");
+        System.out.println("Searching for available rooms between " + formattedCheckInDate + " & " + formattedCheckOutDate + "...");
         Collection<IRoom> availableRooms = new ArrayList<>();
         for(IRoom room: rooms.values()){
             boolean isAvailable = true;

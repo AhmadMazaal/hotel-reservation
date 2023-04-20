@@ -1,5 +1,7 @@
 package model;
 
+import utils.Helpers;
+
 import java.util.Date;
 
 public class Reservation {
@@ -34,10 +36,12 @@ public class Reservation {
 
     @Override
     public String toString() {
+        String formattedCheckInDate = Helpers.formatDate(this.getCheckInDate());
+        String formattedCheckOutDate = Helpers.formatDate(this.getCheckOutDate());
         return "Reservation:\n" +
                 this.getCustomer() +"\n" +
                 this.getRoom() +
-                ", checkInDate: " + this.getCheckInDate() +
-                ", checkOutDate: " + this.getCheckOutDate();
+                ", checkInDate: " + formattedCheckInDate +
+                ", checkOutDate: " + formattedCheckOutDate;
     }
 }

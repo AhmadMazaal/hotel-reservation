@@ -1,5 +1,7 @@
 package model;
 
+import utils.Helpers;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +13,7 @@ public class Customer {
 
     public Customer(String email, String firstName, String lastName){
         try{
-            if(isInvalidEmail(email)){
+            if(Helpers.isInvalidEmail(email)){
                 throw new IllegalArgumentException("Wrong email format");
             }
             this.firstName = firstName;
@@ -45,20 +47,13 @@ public class Customer {
 
     public void setEmail(String email) {
         try {
-            if(isInvalidEmail(email)){
+            if(Helpers.isInvalidEmail(email)){
                 throw new IllegalArgumentException("Wrong email format");
             }
             this.email = email;
         }catch(IllegalArgumentException exception){
             System.out.println("Error creating a new customer: "  +exception.getLocalizedMessage());
         }
-    }
-
-    private static boolean isInvalidEmail(String email){
-        String emailRegex = "^(.+)@(.+).(.+)$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return !matcher.find();
     }
 
     @Override

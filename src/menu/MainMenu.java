@@ -23,22 +23,9 @@ public class MainMenu {
     }
 
     public void initMainMenu(){
-        int choice;
-        do{
-            System.out.println("*****************************************************************************");
-            System.out.println("**\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t   **");
-            System.out.println("**\t\t\t\tWelcome to the Hotel Reservation Application\t\t\t   **");
-            System.out.println("**\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t   **");
-            System.out.println("*****************************************************************************");
-            for (MainMenuQuestionType option : MainMenuQuestionType.values()) {
-                System.out.println(option.getValue() + ". " + option.getQuestion());
-            }
-            while (!scanner.hasNextInt()) {
-                System.out.println("Invalid input, please enter a number");
-                scanner.next();
-            }
-            choice = this.scanner.nextInt();
-            scanner.nextLine();
+        boolean running = true;
+        while (running) {
+            int choice = this.getUserInput();
             MainMenuQuestionType option = MainMenuQuestionType.fromValue(choice);
             switch (option){
                 case FIND_AND_RESERVE_ROOM:
@@ -54,13 +41,38 @@ public class MainMenu {
                     startAdminMenu();
                     break;
                 case EXIT:
+                    running = false;
                     System.out.println("Exiting...");
                     break;
                 default:
                     System.out.println("Invalid choice");
                     break;
             }
-        }while(choice!= 5);
+        }
+
+    }
+
+    private int getUserInput(){
+        int choice;
+        int minOption = 1;
+        int maxOption = MainMenuQuestionType.values().length;
+        boolean validInput = true;
+        do {
+            MainMenuQuestionType.printMenuHeader();
+            for (MainMenuQuestionType option : MainMenuQuestionType.values()) {
+                System.out.println(option.getValue() + ". " + option.getQuestion());
+            }
+            String input = this.scanner.nextLine();
+            if (input.length() != 1 || !Character.isDigit(input.charAt(0))) {
+                System.out.println("Invalid input. Enter a number between " +minOption + " & "+ maxOption);
+                choice = 0;
+                validInput = false;
+            } else {
+                choice = Integer.parseInt(input);
+                validInput = (choice >= minOption && choice <= maxOption);
+            }
+        } while (!validInput);
+        return choice;
     }
 
     public void startAdminMenu(){
@@ -70,15 +82,19 @@ public class MainMenu {
 
     public String handleAddNewCustomer(){
         String email = "";
-        try{
+        boolean isValidEmail = true;
+        do{
             System.out.println("Enter your email address(format should be as such: name@domain.com)");
-             email = scanner.nextLine();
+            email = scanner.nextLine();
             if(Helpers.isInvalidEmail(email)){
-                throw new IllegalArgumentException("Invalid email address");
+                isValidEmail = false;
+                System.out.println("Invalid email address, please try again.");
+            }else{
+                isValidEmail = true;
             }
-        }catch(IllegalArgumentException e){
-            System.out.println(e.getLocalizedMessage());
-        }
+
+        }while(!isValidEmail);
+
 
         System.out.println("Enter your first name");
         String firstName = scanner.nextLine();
@@ -93,13 +109,22 @@ public class MainMenu {
     }
 
     public void handleGetCustomerReservations(){
-        try{
-            HotelResource hotelResource = new HotelResource();
+        HotelResource hotelResource = new HotelResource();
+        String email;
+        boolean isValidEmail = true;
+
+        do{
             System.out.println("Enter your email address(format should be as such: name@domain.com)");
-            String email = scanner.nextLine();
+            email = scanner.nextLine();
             if(Helpers.isInvalidEmail(email)){
-                throw new IllegalArgumentException("Invalid email format");
+                isValidEmail = false;
+                System.out.println("Invalid email address, please try again.");
+            }else{
+                isValidEmail = true;
             }
+
+        }while(!isValidEmail);
+
             Collection<Reservation> totalReservations =  hotelResource.getCustomersReservations(email);
             if(totalReservations.size() == 0 ){
                 System.out.println(email + " has no reservations yet! Press 1 to make a new reservation.");
@@ -111,14 +136,11 @@ public class MainMenu {
                 System.out.println(reservation+"\n");
             }
             System.out.println("---------------\n");
-        }catch(Exception e){
-            System.out.println(e.getLocalizedMessage());
-        }
+
 
     }
 
     public void handleFindAndReserveRoom() {
-        Helpers helpers = new Helpers();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy").withZone(ZoneId.of("UTC"));
         LocalDate checkInLocalDate = null, checkOutLocalDate = null;
         Collection<IRoom> availableRooms;
@@ -127,7 +149,7 @@ public class MainMenu {
             System.out.println("Enter the check-in date in the format of mm/dd/yyyy (for example, 04/16/2023)");
             String checkInDateStr = scanner.nextLine();
 
-            if (isDateInvalid(checkInDateStr)) {
+            if (Helpers.isDateInvalid(checkInDateStr)) {
                 continue;
             }
 
@@ -143,7 +165,7 @@ public class MainMenu {
             System.out.println("Enter the check-out date in the format of mm/dd/yyyy (for example, 04/18/2023)");
             String checkOutDateStr = scanner.nextLine();
 
-            if (isDateInvalid(checkOutDateStr)) {
+            if (Helpers.isDateInvalid(checkOutDateStr)) {
                 continue;
             }
 
@@ -184,13 +206,13 @@ public class MainMenu {
         }
         System.out.println("---------------\n");
 
-        char shouldReserveRoom = helpers.readYesNo("Would you like to reserve a room? y/n");
+        char shouldReserveRoom = Helpers.readYesNo("Would you like to reserve a room? y/n");
         if(shouldReserveRoom == 'n'){
             return;
         }
 
         String email;
-        char shouldCreateAccount = helpers.readYesNo("Do you have an account with us? y/n");
+        char shouldCreateAccount = Helpers.readYesNo("Do you have an account with us? y/n");
         if(shouldCreateAccount == 'n'){
             System.out.println("Creating a new account...");
             email = handleAddNewCustomer();
@@ -229,15 +251,6 @@ public class MainMenu {
 
         Reservation newReservation = hotelResource.bookARoom(email, targetRoom, checkInDate, checkOutDate);
         System.out.println(newReservation);
-    }
-
-    private boolean isDateInvalid(String dateStr){
-        String dateRegex = "^\\d{2}/\\d{2}/\\d{4}$";
-        if (!dateStr.matches(dateRegex)) {
-            System.out.println("Invalid date format, please enter in the format of mm/dd/yyyy");
-            return true;
-        }
-        return false;
     }
 
 

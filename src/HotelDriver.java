@@ -1,5 +1,4 @@
 import menu.MainMenu;
-import model.Customer;
 
 public class
 HotelDriver {

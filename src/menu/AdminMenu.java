@@ -9,8 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
-import static model.AdminMenuQuestionType.*;
-
 public class AdminMenu {
     private static final Scanner scanner = new Scanner(System.in);
     private static final AdminResource adminResource = new AdminResource();
@@ -33,6 +31,9 @@ public class AdminMenu {
                 case ADD_ROOM:
                     handleAddRooms();
                     break;
+                case TEST_DATA:
+                    startTestDataMenu();
+                    break;
                 case BACK_TO_MAIN_MENU:
                     System.out.println("Going back..");
                     running = false;
@@ -44,6 +45,11 @@ public class AdminMenu {
             }
         }
 
+    }
+
+    public void startTestDataMenu(){
+        TestDataMenu testDataMenu = new TestDataMenu();
+        testDataMenu.initMenu();
     }
 
     private int getUserInput(){
@@ -132,7 +138,14 @@ public class AdminMenu {
             }
         } while (!roomType.equals("1") && !roomType.equals("2"));
         boolean isFree = price == 0;
-        return new Room(roomNumber, roomType.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE, isFree, price);
+        RoomType finalRoomType = roomType.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE;
+        IRoom room;
+        if(isFree){
+            room = new FreeRoom(roomNumber, finalRoomType, true);
+        }else{
+            room = new Room(roomNumber, finalRoomType, false, price);
+        }
+        return room;
     }
 
 }

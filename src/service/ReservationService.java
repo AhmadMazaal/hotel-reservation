@@ -38,13 +38,20 @@ public class ReservationService {
             boolean isAvailable = true;
 
             if (!isFreeRoomFilterEnabled) {
-                for(Reservation reservation:reservations){
-                    if(room.getRoomNumber().equals(reservation.getRoom().getRoomNumber()) &&
-                            !(checkOutDate.before(reservation.getCheckInDate()) || checkInDate.after(reservation.getCheckOutDate()))){
-                        isAvailable = false;
-                        break;
+                if (room.isFree()) {
+                    isAvailable = false;
+                }else{
+                    for(Reservation reservation:reservations){
+
+                        if(
+                                room.getRoomNumber().equals(reservation.getRoom().getRoomNumber()) &&
+                                        !(checkOutDate.before(reservation.getCheckInDate()) || checkInDate.after(reservation.getCheckOutDate()))){
+                            isAvailable = false;
+                            break;
+                        }
                     }
                 }
+
             } else {
                 if (!room.isFree()) {
                     isAvailable = false;

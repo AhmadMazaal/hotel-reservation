@@ -17,6 +17,8 @@ public class MainMenu {
     private final Scanner scanner;
     private int queryAttempts;
 
+    private static final HotelResource hotelResource = new HotelResource();
+
     public MainMenu(){
         this.scanner = new Scanner(System.in);
         this.queryAttempts = 0;
@@ -81,19 +83,18 @@ public class MainMenu {
     }
 
     public String handleAddNewCustomer(){
-        String email = "";
-        boolean isValidEmail = true;
+        boolean doesCustomerExist = false;
+        String email;
         do{
-            System.out.println("Enter your email address(format should be as such: name@domain.com)");
-            email = scanner.nextLine();
-            if(Helpers.isInvalidEmail(email)){
-                isValidEmail = false;
-                System.out.println("Invalid email address, please try again.");
+            email = Helpers.emailPrompt();
+            Customer customer = hotelResource.getCustomer(email);
+            if(customer != null){
+                System.out.println("Email already exists! try another one.");
+                doesCustomerExist = true;
             }else{
-                isValidEmail = true;
+                doesCustomerExist = false;
             }
-
-        }while(!isValidEmail);
+        }while(doesCustomerExist);
 
 
         System.out.println("Enter your first name");
@@ -102,42 +103,24 @@ public class MainMenu {
         System.out.println("Enter your last name");
         String lastName = scanner.nextLine();
 
-        HotelResource hotelResource = new HotelResource();
         hotelResource.createACustomer(email, firstName, lastName);
 
         return email;
     }
 
     public void handleGetCustomerReservations(){
-        HotelResource hotelResource = new HotelResource();
-        String email;
-        boolean isValidEmail = true;
-
-        do{
-            System.out.println("Enter your email address(format should be as such: name@domain.com)");
-            email = scanner.nextLine();
-            if(Helpers.isInvalidEmail(email)){
-                isValidEmail = false;
-                System.out.println("Invalid email address, please try again.");
-            }else{
-                isValidEmail = true;
-            }
-
-        }while(!isValidEmail);
-
-            Collection<Reservation> totalReservations =  hotelResource.getCustomersReservations(email);
-            if(totalReservations.size() == 0 ){
-                System.out.println(email + " has no reservations yet! Press 1 to make a new reservation.");
-                return;
-            }
-            System.out.println(email + " has the following reservations: \n");
-            System.out.println("---------------");
-            for(Reservation reservation:totalReservations){
-                System.out.println(reservation+"\n");
-            }
-            System.out.println("---------------\n");
-
-
+        String email = Helpers.emailPrompt();
+        Collection<Reservation> totalReservations =  hotelResource.getCustomersReservations(email);
+        if(totalReservations.size() == 0 ){
+            System.out.println(email + " has no reservations yet! Press 1 to make a new reservation.");
+            return;
+        }
+        System.out.println(email + " has the following reservations: \n");
+        System.out.println("---------------");
+        for(Reservation reservation:totalReservations){
+            System.out.println(reservation+"\n");
+        }
+        System.out.println("---------------\n");
     }
 
     public void handleFindAndReserveRoom() {
@@ -183,7 +166,6 @@ public class MainMenu {
 
         } while (checkOutLocalDate == null);
 
-        HotelResource hotelResource = new HotelResource();
         ZoneId zoneId = ZoneId.of("UTC");
         Date checkInDate = Date.from(checkInLocalDate.atStartOfDay(zoneId).toInstant());
         Date checkOutDate = Date.from(checkOutLocalDate.atStartOfDay(zoneId).toInstant());
@@ -218,20 +200,13 @@ public class MainMenu {
             email = handleAddNewCustomer();
         } else{
             Customer customer = null;
-            boolean isInvalidValidEmail = false;
             do{
-                System.out.println("Enter your email address(format should be as such: name@domain.com)");
-                email = scanner.nextLine();
-                if(Helpers.isInvalidEmail(email)){
-                    System.out.println("invalid email format");
-                    isInvalidValidEmail = true;
-                    continue;
-                }
+                email = Helpers.emailPrompt();
                 customer = hotelResource.getCustomer(email);
                 if(customer == null){
                     System.out.println("Email does not exist, please try again");
                 }
-            }while(customer == null || isInvalidValidEmail);
+            }while(customer == null);
         }
 
         IRoom targetRoom = null;

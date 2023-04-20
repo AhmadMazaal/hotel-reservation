@@ -16,6 +16,7 @@ public class AdminResource {
         return customerService.getCustomer(email);
     }
 
+    // Kindly note that I think this should accept only IRoom instead of List<IRoom>, this way prevented me to create single rooms using the resource.
     public void addRoom(List<IRoom> rooms){
         for(IRoom room:rooms){
             reservationService.addRoom(room);

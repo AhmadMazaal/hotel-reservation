@@ -14,11 +14,6 @@ public class ReservationService {
     public void addRoom(IRoom room){
         rooms.put(room.getRoomNumber(), room);
     }
-    public void addMultipleRooms(List<IRoom> rooms){
-        for(IRoom room:rooms){
-            ReservationService.rooms.put(room.getRoomNumber(), room);
-        }
-    }
 
     public IRoom getARoom(String roomNumber){
         return rooms.get(roomNumber);
@@ -31,25 +26,39 @@ public class ReservationService {
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+        char searchCriteria = Helpers.readChoices("Enter search criteria: \n1 for free rooms\n2 for paid rooms");
+        boolean isFreeRoomFilterEnabled = searchCriteria == '1';
+
         String formattedCheckInDate = Helpers.formatDate(checkInDate);
         String formattedCheckOutDate = Helpers.formatDate(checkOutDate);
 
-        System.out.println("Searching for available rooms between " + formattedCheckInDate + " & " + formattedCheckOutDate + "...");
+        System.out.println("Searching for available " + "rooms between " + formattedCheckInDate + " & " + formattedCheckOutDate + "...");
         Collection<IRoom> availableRooms = new ArrayList<>();
         for(IRoom room: rooms.values()){
             boolean isAvailable = true;
-            for(Reservation reservation:reservations){
-                  if(
-                      room.getRoomNumber().equals(reservation.getRoom().getRoomNumber()) &&
-                       !(
-                           checkOutDate.before(reservation.getCheckInDate()) ||
-                           checkInDate.after(reservation.getCheckOutDate())
-                       )
-                  ){
-                      isAvailable = false;
-                      break;
-                  }
+
+            if (!isFreeRoomFilterEnabled) {
+                for(Reservation reservation:reservations){
+                    if(room.getRoomNumber().equals(reservation.getRoom().getRoomNumber()) &&
+                            !(checkOutDate.before(reservation.getCheckInDate()) || checkInDate.after(reservation.getCheckOutDate()))){
+                        isAvailable = false;
+                        break;
+                    }
+                }
+            } else {
+                if (!room.isFree()) {
+                    isAvailable = false;
+                } else {
+                    for(Reservation reservation:reservations){
+                        if(room.getRoomNumber().equals(reservation.getRoom().getRoomNumber()) &&
+                                !(checkOutDate.before(reservation.getCheckInDate()) || checkInDate.after(reservation.getCheckOutDate()))){
+                            isAvailable = false;
+                            break;
+                        }
+                    }
+                }
             }
+
             if(isAvailable){
                 availableRooms.add(room);
             }

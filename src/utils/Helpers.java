@@ -17,13 +17,43 @@ public class Helpers {
             if (
                 input.length() == 1 &&
                 (
-                        input.equalsIgnoreCase("y") ||
-                        input.equalsIgnoreCase("n")
+                    input.equalsIgnoreCase("y") ||
+                    input.equalsIgnoreCase("n")
                 )
             ) {
                 return input.toLowerCase().charAt(0);
             }
             System.out.println("Invalid input. Please enter 'y' (Yes) or 'n' (No).");
+        }
+    }
+
+    public static char readChoices(String prompt) {
+        final Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println(prompt);
+            String input = scanner.nextLine().trim();
+            if (
+                    input.length() == 1 &&
+                            (
+                                input.equalsIgnoreCase("1") ||
+                                input.equalsIgnoreCase("2")
+                            )
+            ) {
+                return input.toLowerCase().charAt(0);
+            }
+            System.out.println("Invalid input. Please enter 'y' (Yes) or 'n' (No).");
+        }
+    }
+
+    public static String emailPrompt() {
+        final Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter your email address (format should as such: name@domain.com)");
+            String email = scanner.nextLine().trim();
+            if (!isInvalidEmail(email)) {
+                return email;
+            }
+            System.out.println("Invalid email address, please try again.");
         }
     }
 

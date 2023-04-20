@@ -120,7 +120,7 @@ public class AdminMenu {
             return createNewRoom();
         }
 
-        System.out.println("Enter price per night");
+        System.out.println("Enter price per night (enter 0 if you want to make it for free)");
         double price = scanner.nextDouble();
 
         String roomType;
@@ -131,8 +131,8 @@ public class AdminMenu {
                 System.out.println("Please enter 1 for single bed or 2 for double bed");
             }
         } while (!roomType.equals("1") && !roomType.equals("2"));
-        //TODO: Check if this needs to be changed
-        return new Room(roomNumber, roomType.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE, true, price);
+        boolean isFree = price == 0;
+        return new Room(roomNumber, roomType.equals("1") ? RoomType.SINGLE : RoomType.DOUBLE, isFree, price);
     }
 
 }

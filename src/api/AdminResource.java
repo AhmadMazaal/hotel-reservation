@@ -10,8 +10,8 @@ import java.util.List;
 
 public class AdminResource {
 
-    private static final CustomerService customerService = new CustomerService();
-    private static final ReservationService reservationService = new ReservationService();
+    private static final CustomerService customerService = CustomerService.getInstance();
+    private static final ReservationService reservationService =  ReservationService.getInstance();
     public Customer getCustomer(String email){
         return customerService.getCustomer(email);
     }

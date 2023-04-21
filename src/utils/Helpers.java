@@ -9,10 +9,10 @@ import java.util.regex.Pattern;
 
 public class Helpers {
 
-    public static char readYesNo(String prompt) {
+    public static boolean readYesNo(String prompt) {
         final Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println(prompt);
+            System.out.println(prompt +  " y/n");
             String input = scanner.nextLine().trim();
             if (
                 input.length() == 1 &&
@@ -21,7 +21,7 @@ public class Helpers {
                     input.equalsIgnoreCase("n")
                 )
             ) {
-                return input.toLowerCase().charAt(0);
+                return input.toLowerCase().charAt(0) == 'y';
             }
             System.out.println("Invalid input. Please enter 'y' (Yes) or 'n' (No).");
         }
@@ -41,7 +41,7 @@ public class Helpers {
             ) {
                 return input.toLowerCase().charAt(0);
             }
-            System.out.println("Invalid input. Please enter 'y' (Yes) or 'n' (No).");
+            System.out.println("Invalid input. Please enter 1 or 2.");
         }
     }
 

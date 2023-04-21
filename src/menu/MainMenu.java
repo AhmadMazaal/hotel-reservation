@@ -11,17 +11,15 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class MainMenu {
     private final Scanner scanner;
-    private int queryAttempts;
-
     private static final HotelResource hotelResource = new HotelResource();
 
     public MainMenu(){
         this.scanner = new Scanner(System.in);
-        this.queryAttempts = 0;
     }
 
     public void initMainMenu(){
@@ -30,25 +28,16 @@ public class MainMenu {
             int choice = this.getUserInput();
             MainMenuQuestionType option = MainMenuQuestionType.fromValue(choice);
             switch (option){
-                case FIND_AND_RESERVE_ROOM:
-                    handleFindAndReserveRoom();
-                    break;
-                case SEE_MY_RESERVATIONS:
-                    handleGetCustomerReservations();
-                    break;
-                case CREATE_AN_ACCOUNT:
-                    handleAddNewCustomer();
-                    break;
-                case ADMIN:
-                    startAdminMenu();
-                    break;
-                case EXIT:
+                case FIND_AND_RESERVE_ROOM->handleFindAndReserveRoom();
+                case SEE_MY_RESERVATIONS->handleGetCustomerReservations();
+                case CREATE_AN_ACCOUNT->handleAddNewCustomer();
+                case ADMIN->startAdminMenu();
+                case EXIT-> {
                     running = false;
                     System.out.println("Exiting...");
-                    break;
-                default:
-                    System.out.println("Invalid choice");
-                    break;
+                }
+                default->System.out.println("Invalid choice");
+
             }
         }
 
@@ -169,18 +158,28 @@ public class MainMenu {
         ZoneId zoneId = ZoneId.of("UTC");
         Date checkInDate = Date.from(checkInLocalDate.atStartOfDay(zoneId).toInstant());
         Date checkOutDate = Date.from(checkOutLocalDate.atStartOfDay(zoneId).toInstant());
-        availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
+        availableRooms = hotelResource.findARoom(checkInDate, checkOutDate, true);
 
         if(availableRooms.size() == 0){
-            this.queryAttempts++;
-            if(this.queryAttempts == 3){
-                System.out.println("Too many attempts, please contact the admin to find an available room in your specified dates.");
-                return;
-            }
-            System.out.println("No rooms are available in the date provided, please try another date");
-            handleFindAndReserveRoom();
-            return;
+                checkInDate = Date.from(checkInDate.toInstant().plus(7, ChronoUnit.DAYS));
+                checkOutDate = Date.from(checkOutDate.toInstant().plus(7, ChronoUnit.DAYS));
+                String formattedNewCheckInDate = Helpers.formatDate(checkInDate);
+                String formattedNewCheckOutDate = Helpers.formatDate(checkOutDate);
+                System.out.println("No rooms are available in the date provided. Refining the search for: " + formattedNewCheckInDate +" & " + formattedNewCheckOutDate);
+                availableRooms = hotelResource.findARoom(checkInDate, checkOutDate, false);
+                if(availableRooms.size() > 0){
+                    System.out.println(availableRooms.size() + " room(s) found!\n");
+                }
+                if(availableRooms.size() == 0){
+                    boolean shouldRetrySearch = Helpers.readYesNo("No rooms are available. Would you like to try different dates?");
+                    if(shouldRetrySearch){
+                        handleFindAndReserveRoom();
+                        return;
+                    }
+                    return;
+                }
         }
+
         System.out.println("We have the following rooms available in the specified date:");
         System.out.println("---------------");
         for(IRoom room:availableRooms){
@@ -188,14 +187,14 @@ public class MainMenu {
         }
         System.out.println("---------------\n");
 
-        char shouldReserveRoom = Helpers.readYesNo("Would you like to reserve a room? y/n");
-        if(shouldReserveRoom == 'n'){
+        boolean shouldReserveRoom = Helpers.readYesNo("Would you like to reserve a room?");
+        if(!shouldReserveRoom){
             return;
         }
 
         String email;
-        char shouldCreateAccount = Helpers.readYesNo("Do you have an account with us? y/n");
-        if(shouldCreateAccount == 'n'){
+        boolean shouldCreateAccount = Helpers.readYesNo("Do you have an account with us?");
+        if(!shouldCreateAccount){
             System.out.println("Creating a new account...");
             email = handleAddNewCustomer();
         } else{

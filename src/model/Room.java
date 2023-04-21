@@ -15,30 +15,30 @@ public class Room implements IRoom {
     }
 
     @Override
-    public RoomType getRoomType() {
+    public final RoomType getRoomType() {
         return this.roomType;
     }
 
     @Override
-    public String getRoomNumber() {
+    public final String getRoomNumber() {
         return this.roomNumber;
     }
 
     @Override
-    public boolean isFree() {
+    public final boolean isFree() {
         return this.isRoomFree;
     }
 
     @Override
-    public double getRoomPrice() {
+    public final double getRoomPrice() {
         return this.price;
     }
 
     @Override
     public String toString() {
         return "Room: " +
-                "roomType: " + roomType +
-                ", roomNumber: " + roomNumber +
-                ", price: " + price;
+                "roomType: " + this.getRoomType() +
+                ", roomNumber: " + this.getRoomNumber() +
+                ", price: " + this.getRoomPrice();
     }
 }

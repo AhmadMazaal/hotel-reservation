@@ -14,23 +14,11 @@ public class TestDataMenu {
             int choice = getUserInput();
             TestDataQuestionsType option = TestDataQuestionsType.fromValue(choice);
             switch (option){
-                case GENERATE_CUSTOMERS:
-                    Seeders.generateCustomers();
-                    break;
-                case GENERATE_ROOMS:
-                    Seeders.generateRooms();
-                    break;
-                case GENERATE_RESERVATIONS:
-                    Seeders.generateReservations();
-                    break;
-                case BACK_TO_MAIN_MENU:
-                    System.out.println("Going back..");
-                    running = false;
-                    break;
-                default:{
-                    System.out.println("Invalid choice, please try again.");
-                    break;
-                }
+                case GENERATE_CUSTOMERS->Seeders.generateCustomers();
+                case GENERATE_ROOMS->Seeders.generateRooms();
+                case GENERATE_RESERVATIONS->Seeders.generateReservations();
+                case BACK_TO_MAIN_MENU->running = false;
+                default->System.out.println("Invalid choice, please try again.");
             }
         }
     }

@@ -5,11 +5,22 @@ import model.IRoom;
 import model.Reservation;
 import utils.Helpers;
 
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class ReservationService {
     private static final Map<String, IRoom> rooms = new HashMap<>();
     private static final Collection<Reservation> reservations = new ArrayList<>();
+
+    private static ReservationService RESERVATION_INSTANCE;
+
+    public static ReservationService getInstance() {
+        if(RESERVATION_INSTANCE == null) {
+            RESERVATION_INSTANCE = new ReservationService();
+        }
+        return RESERVATION_INSTANCE;
+    }
+
 
     public void addRoom(IRoom room){
         rooms.put(room.getRoomNumber(), room);
@@ -25,15 +36,25 @@ public class ReservationService {
         return newReservation;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        char searchCriteria = Helpers.readChoices("Enter search criteria: \n1 for free rooms\n2 for paid rooms");
-        boolean isFreeRoomFilterEnabled = searchCriteria == '1';
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate, boolean shouldDisplayFilter){
+        boolean isFreeRoomFilterEnabled = false;
+        if(shouldDisplayFilter){
+            char searchCriteria = Helpers.readChoices("Enter search criteria: \n1 for free rooms\n2 for paid rooms");
+            isFreeRoomFilterEnabled = searchCriteria == '1';
+        }
 
         String formattedCheckInDate = Helpers.formatDate(checkInDate);
         String formattedCheckOutDate = Helpers.formatDate(checkOutDate);
 
         System.out.println("Searching for available " + "rooms between " + formattedCheckInDate + " & " + formattedCheckOutDate + "...");
+        return findAvailableRooms(checkInDate, checkOutDate, isFreeRoomFilterEnabled);
+
+    }
+
+    private Collection<IRoom> findAvailableRooms(Date checkInDate, Date checkOutDate, boolean isFreeRoomFilterEnabled){
+
         Collection<IRoom> availableRooms = new ArrayList<>();
+
         for(IRoom room: rooms.values()){
             boolean isAvailable = true;
 
@@ -72,6 +93,7 @@ public class ReservationService {
         }
         return availableRooms;
     }
+
 
     public Collection<Reservation> getCustomersReservation(Customer customer){
         Collection<Reservation> customerReservations = new ArrayList<>();

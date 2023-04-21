@@ -10,16 +10,16 @@ public enum TestDataQuestionsType {
     private final int value;
     private final String question;
 
-    TestDataQuestionsType(int value, String question) {
+     TestDataQuestionsType(int value, String question) {
         this.value = value;
         this.question = question;
     }
 
-    public int getValue() {
+    public final int getValue() {
         return value;
     }
 
-    public String getQuestion() {
+    public final String getQuestion() {
         return question;
     }
 

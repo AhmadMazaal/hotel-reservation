@@ -19,29 +19,13 @@ public class AdminMenu {
             int choice = getUserInput();
             AdminMenuQuestionType option = AdminMenuQuestionType.fromValue(choice);
             switch (option){
-                case SEE_ALL_CUSTOMERS:
-                    handleDisplayAllCustomers();
-                    break;
-                case SEE_ALL_ROOMS:
-                    handleDisplayAllRooms();
-                    break;
-                case SEE_ALL_RESERVATIONS:
-                    handleDisplayAllReservations();
-                    break;
-                case ADD_ROOM:
-                    handleAddRooms();
-                    break;
-                case TEST_DATA:
-                    startTestDataMenu();
-                    break;
-                case BACK_TO_MAIN_MENU:
-                    System.out.println("Going back..");
-                    running = false;
-                    break;
-                default:{
-                    System.out.println("Invalid choice, please try again.");
-                    break;
-                }
+                case SEE_ALL_CUSTOMERS -> handleDisplayAllCustomers();
+                case SEE_ALL_ROOMS ->handleDisplayAllRooms();
+                case SEE_ALL_RESERVATIONS-> handleDisplayAllReservations();
+                case ADD_ROOM->handleAddRooms();
+                case TEST_DATA->startTestDataMenu();
+                case BACK_TO_MAIN_MENU->running = false;
+                default-> System.out.println("Invalid choice, please try again.");
             }
         }
 
@@ -105,11 +89,11 @@ public class AdminMenu {
 
     private void handleAddRooms(){
         List<IRoom> currentRooms = new ArrayList<>();
-        char addRoomChoice = 'y';
-        while (addRoomChoice != 'n'){
+        boolean shouldAddMoreRooms = true;
+        while (shouldAddMoreRooms){
             currentRooms.add(createNewRoom());
             adminResource.addRoom(currentRooms);
-            addRoomChoice = Helpers.readYesNo("Do you want to add more rooms? y/n");
+            shouldAddMoreRooms = Helpers.readYesNo("Do you want to add more rooms?");
             scanner.nextLine();
         }
     }

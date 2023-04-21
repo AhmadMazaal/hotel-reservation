@@ -25,27 +25,27 @@ public class Customer {
 
     }
 
-    public String getFirstName() {
+    public final String getFirstName() {
         return this.firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public final void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public final String getLastName() {
         return this.lastName;
     }
 
-    public void setLastName(String lastName) {
+    public final void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public final String getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public final void setEmail(String email) {
         try {
             if(Helpers.isInvalidEmail(email)){
                 throw new IllegalArgumentException("Wrong email format");

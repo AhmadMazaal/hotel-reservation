@@ -7,7 +7,7 @@ public class FreeRoom extends Room{
     }
 
     @Override
-    public String toString(){
+    public final String toString(){
         return super.toString();
     }
 }
